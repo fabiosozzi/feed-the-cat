@@ -4,22 +4,29 @@ namespace App\Actions\Cats;
 
 use App\Models\Cat;
 use App\DTOs\CatDTO;
+use App\Http\Resources\CatResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreateNewCat
 {
     use AsAction;
 
-    public function handle(CatDTO $catDTO)
+    /**
+     * Handle the creation of a new cat
+     *
+     * @param CatDTO $catDTO
+     * @return CatDTO
+     */
+    public function handle(CatDTO $catDTO): CatResource
     {
-        // Handle the creation of a new cat
         $cat = Cat::create($catDTO->toArray());
-        return CatDTO::fromArray($cat->toArray());
+        return new CatResource($cat);
     }
 
-    public function asController(Request $request)
+    public function asController(CatDTO $catDTO): JsonResponse
     {
-        return response()->json($this->handle(CatDTO::fromRequest($request)));
+        return response()->json($this->handle($catDTO));
     }
 }

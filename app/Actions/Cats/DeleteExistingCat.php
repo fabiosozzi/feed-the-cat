@@ -8,7 +8,7 @@ class DeleteExistingCat
 {
     use AsAction;
 
-    public function handle()
+    public function handle(): void
     {
         // ...
     }

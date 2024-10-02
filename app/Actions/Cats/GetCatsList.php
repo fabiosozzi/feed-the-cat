@@ -2,9 +2,11 @@
 
 namespace App\Actions\Cats;
 
-use App\DTOs\CatDTO;
 use App\Models\Cat;
+use App\DTOs\CatDTO;
+use App\Http\Resources\CatResource;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,25 +16,24 @@ class GetCatsList
 {
     use AsAction;
 
+    /**
+     * Get all cats that belong to the given user
+     *
+     * @param User $user
+     * @return Collection<CatDTO>
+     */
     public function handle(User $user): Collection
     {
-        // Get all cats that belong to the given user
         return Cat::whereHas('owner', function (Builder $query) use ($user) {
             $query->where('id', $user->id);
         })
         ->get()
         ->map(
-            fn (Cat $cat) => new CatDTO([
-                'name' => $cat->name,
-                'breed' => $cat->breed,
-                'date_of_birth' => $cat->date_of_birth,
-                'weight' => $cat->weight,
-                'user_id' => $cat->user_id,
-            ])
+            fn (Cat $cat) => new CatResource($cat)
         );
     }
 
-    public function asController()
+    public function asController(): JsonResponse
     {
         return response()->json($this->handle(Auth::user()));
     }

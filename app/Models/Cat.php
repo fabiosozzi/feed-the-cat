@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Cat extends Model
 {
@@ -17,7 +18,10 @@ class Cat extends Model
         'user_id'
     ];
 
-    public function owner()
+    /**
+     * @return BelongsTo<User>
+     */    
+    public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
