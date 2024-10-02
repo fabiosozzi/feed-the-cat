@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('cats')->name('cats.')->middleware('auth:sanctum')->group(function () {
     Route::get('/', GetCatsList::class)->name('list');
     Route::post('/', CreateNewCat::class)->name('create');
-    Route::get('/{cat}', GetExistingCat::class)->name('show');
-    Route::put('/{cat}', UpdateExistingCat::class)->name('update');
-    Route::delete('/{cat}', DeleteExistingCat::class)->name('delete');
+    Route::get('/{catId}', GetExistingCat::class)->name('show');
+    Route::put('/{catId}', UpdateExistingCat::class)->name('update');
+    Route::delete('/{catId}', DeleteExistingCat::class)->name('delete');
 });

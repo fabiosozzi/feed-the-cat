@@ -12,15 +12,27 @@ class UpdateExistingCat
 {
     use AsAction;
 
-    public function handle(Cat $cat, CatDTO $catDTO): CatResource
+    public function handle(int $catId, CatDTO $catDTO): CatResource
     {
+        $cat = Cat::find($catId);
+
+        // Check if the cat exists
+        if (!$cat) {
+            abort(404);
+        }
+
+        // Check if the authenticated user is the owner of the cat
+        if ($cat->user_id !== $catDTO->user_id) {
+            abort(403);
+        }
+
         // Handle the update of an existing cat
         $cat->update($catDTO->toArray());
         return new CatResource($cat);
     }
 
-    public function asController(Cat $cat, CatDTO $catDTO): JsonResponse
+    public function asController(int $catId, CatDTO $catDTO): JsonResponse
     {
-        return response()->json($this->handle($cat, $catDTO));
+        return response()->json($this->handle($catId, $catDTO));
     }
 }
